@@ -5,6 +5,7 @@ from flask import Flask, jsonify
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
+from dotenv import load_dotenv
 
 from db import db
 from blocklist import BLOCKLIST
@@ -18,6 +19,7 @@ from resouces.user import blp as UserBlueprint
 def create_app(db_url=None):
     app = Flask(__name__)
 
+    load_dotenv()
     app.config["PROPAGATE_EXCEPTIONS"] = True
     app.config["API_TITLE"] = "Stores REST API"
     app.config["API_VERSION"] = "v1"
@@ -33,8 +35,7 @@ def create_app(db_url=None):
 
     api = Api(app)
 
-    app.config["JWT_SECRET_KEY"] = "153703547168067982904261213079162660327" 
-    #### secrets.SystemRandom().getrandbits(128)
+    app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY") 
     jwt = JWTManager(app)
 
     @jwt.token_in_blocklist_loader
