@@ -8,10 +8,17 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-316192?logo=postgresql)
 ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-red)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
-![Status](https://img.shields.io/badge/Status-Active-brightgreen)
+![Status](https://img.shields.io/badge/Status-Deployed-brightgreen)
 
-A **RESTful API** built with **Flask** and **PostgreSQL**, designed to manage **stores, items, and tags**.
+A **RESTful API** built with **Flask** and **PostgreSQL**, designed to manage **stores, items, and tags**.  
 This project demonstrates modern API development practices including authentication, database migrations, and schema validation.
+
+🌍 **Live API on Render:**  
+👉 [https://rest-api-project-q1zn.onrender.com](https://rest-api-project-q1zn.onrender.com)  
+
+⚡ The API does not include a frontend UI. You can explore and test it using:
+- [Swagger UI](https://rest-api-project-q1zn.onrender.com/swagger-ui)  
+- **Postman** or **Insomnia** REST clients  
 
 ---
 
@@ -22,7 +29,6 @@ This project demonstrates modern API development practices including authenticat
 * **Alembic migrations** for schema version control.
 * **JWT authentication** for secure endpoints.
 * **CRUD operations** for:
-
   * Stores
   * Items
   * Tags
@@ -36,24 +42,26 @@ This project demonstrates modern API development practices including authenticat
 ## 📂 Project Structure
 
 ```
+
 .
-├── app.py               # Main Flask application entry point
+├── app.py               # Application factory (create\_app)
 ├── db.py                # Database initialization
 ├── blocklist.py         # Token revocation management
 ├── models/              # SQLAlchemy models (Store, Item, Tag, User)
-├── resouces/            # Flask-Restful resources (endpoints)
+├── resouces/            # Flask-Smorest resources (endpoints)
 ├── schemas.py           # Marshmallow schemas for validation
 ├── migrations/          # Alembic migrations
 ├── requirements.txt     # Dependencies
 └── .env.example         # Example environment variables
-```
+
+````
 
 ---
 
 ## 🛠️ Tech Stack & Skills
 
 * **Flask** (API framework)
-* **Flask-RESTful** (structured resources)
+* **Flask-Smorest** (blueprint-based resources)
 * **PostgreSQL** (relational database)
 * **SQLAlchemy ORM**
 * **Alembic** (migrations)
@@ -63,14 +71,14 @@ This project demonstrates modern API development practices including authenticat
 
 ---
 
-## ⚡ Quickstart
+## ⚡ Quickstart (Local Development)
 
 ### 1. Clone the repository
 
 ```bash
 git clone https://github.com/AliReza000J/rest-api-project.git
 cd rest-api-project
-```
+````
 
 ### 2. Create and activate a virtual environment
 
@@ -101,7 +109,7 @@ JWT_SECRET_KEY=your_secret_key
 flask db upgrade
 ```
 
-### 6. Start the API
+### 6. Start the API locally
 
 ```bash
 flask run
@@ -117,6 +125,9 @@ flask run
 * **Get All Stores** → `GET /store`
 * **Create Item** → `POST /item`
 * **Assign Tag to Item** → `POST /item/{item_id}/tag/{tag_id}`
+
+📖 Full interactive docs available at:
+👉 [Swagger UI](https://rest-api-project-q1zn.onrender.com/swagger-ui)
 
 ---
 
