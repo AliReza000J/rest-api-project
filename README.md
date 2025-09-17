@@ -11,7 +11,7 @@
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen)
 
 A **RESTful API** built with **Flask** and **PostgreSQL**, designed to manage **stores, items, and tags**.
-This project demonstrates modern API development practices including authentication, database migrations, and schema validation — making it a great showcase of backend skills.
+This project demonstrates modern API development practices including authentication, database migrations, and schema validation.
 
 ---
 
