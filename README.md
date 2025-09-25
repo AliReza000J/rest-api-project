@@ -11,7 +11,8 @@
 ![Status](https://img.shields.io/badge/Status-Deployed-brightgreen)
 
 A **RESTful API** built with **Flask** and **PostgreSQL**, designed to manage **stores, items, and tags**.  
-This project demonstrates modern API development practices including authentication, database migrations, and schema validation.
+This project demonstrates modern API development practices including authentication, database migrations, and schema validation. 
+It also includes **user registration with email verification** using Maileroo.
 
 🌍 **Live API on Render:**  
 👉 [https://rest-api-project-q1zn.onrender.com](https://rest-api-project-q1zn.onrender.com)  
@@ -36,6 +37,8 @@ This project demonstrates modern API development practices including authenticat
 * **Marshmallow schemas** for input/output validation.
 * **Blocklist** support for token revocation (logout).
 * Organized **resources and models** structure.
+* User registration with **email verification** (Maileroo API)
+* Support for **background tasks / queue workers** (currently disabled in Render free tier, but fully implemented in code)
 
 ---
 
@@ -44,15 +47,21 @@ This project demonstrates modern API development practices including authenticat
 ```
 
 .
-├── app.py               # Application factory (create\_app)
-├── db.py                # Database initialization
-├── blocklist.py         # Token revocation management
-├── models/              # SQLAlchemy models (Store, Item, Tag, User)
-├── resouces/            # Flask-Smorest resources (endpoints)
-├── schemas.py           # Marshmallow schemas for validation
-├── migrations/          # Alembic migrations
-├── requirements.txt     # Dependencies
-└── .env.example         # Example environment variables
+├── app.py                     # Application factory (create_app)
+├── db.py                      # Database initialization
+├── blocklist.py               # Token revocation (logout) management
+├── models/                    # SQLAlchemy models (Store, Item, Tag, User)
+├── resources/                 # Flask-Smorest resource endpoints
+├── schemas.py                 # Marshmallow schemas for validation / serialization
+├── settings.py                # Configuration / settings (e.g. env-based config)
+├── tasks.py                   # Background tasks / queue worker definitions
+├── templates/                 # Email templates (for verification)
+│   └── email/
+├── migrations/                # Alembic migrations folder
+├── requirements.txt           # Python dependencies
+├── .env.example               # Example environment variables
+├── Procfile                   # For deployment (specifies processes)
+└── .flaskenv                  # Flask environment variables (development)
 
 ````
 
@@ -68,6 +77,7 @@ This project demonstrates modern API development practices including authenticat
 * **Marshmallow** (validation/serialization)
 * **Flask-JWT-Extended** (authentication)
 * **Environment configuration** with `.env`
+* **Maileroo API** (email verification)
 
 ---
 
@@ -120,6 +130,7 @@ flask run
 ## 📌 Example API Endpoints
 
 * **Register User** → `POST /register`
+  > On successful registration, a verification email is automatically sent to the provided email address.
 * **Login** → `POST /login`
 * **Create Store** → `POST /store`
 * **Get All Stores** → `GET /store`
@@ -150,6 +161,11 @@ This project demonstrates:
 * **CI/CD pipeline** → automate testing & deployment with GitHub Actions.
 * **Role-based access control (RBAC)** → extend user management.
 * **Caching & performance optimization** → Redis or Flask-Caching.
+* **Monitoring & logging**
 
 ---
 
+## ⚠️ Notes
+
+Background task queue and worker are implemented but disabled on Render free tier. 
+To enable them, configure a Redis instance and run the worker service.
