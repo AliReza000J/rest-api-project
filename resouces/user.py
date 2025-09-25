@@ -21,7 +21,7 @@ def send_verify_email(to, username, subject, body):
     api = os.getenv('MAILEROO_API_KEY')
     client = MailerooClient(api)
     return client.send_basic_email({
-    "from": EmailAddress("alrza0000a@gmail.com", "STORE API"),
+    "from": EmailAddress("25d346ff4380bf05.maileroo.org", "STORE API"),
     "to": [EmailAddress(to, username)],
     "subject": subject,
     # "html": "<h1>Hello World!</h1><p>This is a test email.</p>",
@@ -39,9 +39,8 @@ class UserRegister(MethodView):
                 UserModel.email == user_data["email"]
             )
         ).first():
-            abort(
-                409, message="A user with that username or email already exists!!"
-            )
+            return {"message":"A user with that username or email already exists!!"}, 409
+            
             
         user = UserModel(
             username=user_data["username"],
@@ -51,11 +50,11 @@ class UserRegister(MethodView):
         db.session.add(user)
         db.session.commit()
 
-        send_verify_email(
-            to=user.email,
-            username=user.username,
-            subject="Succesfully signed up",
-            body=f"Hi {user.username}! You have successfully signed up to the Stores REST API.")
+        # send_verify_email(
+        #     to=user.email,
+        #     username=user.username,
+        #     subject="Succesfully signed up",
+        #     body=f"Hi {user.username}! You have successfully signed up to the Stores REST API.")
 
         return {"message": "User created successfully"}, 201
     
