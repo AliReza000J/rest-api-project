@@ -19,14 +19,22 @@ blp = Blueprint("Users", "users", description="Operations on users")
 
 def send_verify_email(to, username, subject, body):
     api = os.getenv('MAILEROO_API_KEY')
+    if not api:
+        raise ValueError("MAILEROO_API_KEY is not set in environment variables")
+    
     client = MailerooClient(api)
-    return client.send_basic_email({
-    "from": EmailAddress("25d346ff4380bf05.maileroo.org", "STORE API"),
-    "to": [EmailAddress(to, username)],
-    "subject": subject,
-    # "html": "<h1>Hello World!</h1><p>This is a test email.</p>",
-    "plain": body
-})
+
+    try:
+        response = client.send_basic_email({
+            "from": EmailAddress("noreply@25d346ff4380bf05.maileroo.org", "STORES API"),
+            "to": [EmailAddress(to, username)],
+            "subject": subject,
+            "plain": body
+        })
+        return response
+    except Exception as e:
+        print("Error sending email:", e)
+        return None
 
 
 @blp.route("/register")
@@ -50,14 +58,15 @@ class UserRegister(MethodView):
         db.session.add(user)
         db.session.commit()
 
-        # send_verify_email(
-        #     to=user.email,
-        #     username=user.username,
-        #     subject="Succesfully signed up",
-        #     body=f"Hi {user.username}! You have successfully signed up to the Stores REST API.")
+        send_verify_email(
+            to=user.email,
+            username=user.username,
+            subject="Succesfully signed up",
+            body=f"Hi {user.username}! You have successfully signed up to the Stores REST API.")
 
         return {"message": "User created successfully"}, 201
     
+
 
 @blp.route("/login")
 class UserLogin(MethodView):
