@@ -12,3 +12,4 @@ requests
 maileroo
 rq
 redis
+flask-cors

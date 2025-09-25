@@ -8,20 +8,23 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from dotenv import load_dotenv
 from rq import Queue
+from flask_cors import CORS
 
 from db import db
 from blocklist import BLOCKLIST
 import models
 
-from resouces.item import blp as ItemBlueprint
-from resouces.store import blp as StoreBlueprint
-from resouces.tag import blp as TagBlueprint
-from resouces.user import blp as UserBlueprint
+from resources.item import blp as ItemBlueprint
+from resources.store import blp as StoreBlueprint
+from resources.tag import blp as TagBlueprint
+from resources.user import blp as UserBlueprint
 
 def create_app(db_url=None):
     app = Flask(__name__)
     load_dotenv()
 
+    CORS(app)
+    
 ########
     # connection = redis.from_url(
     #     os.getenv("REDIS_URL")
