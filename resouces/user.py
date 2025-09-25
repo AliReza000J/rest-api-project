@@ -6,6 +6,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jw
 import requests
 import os
 from sqlalchemy import or_ 
+from maileroo import MailerooClient, EmailAddress
 
 from blocklist import BLOCKLIST
 from db import db
@@ -15,15 +16,17 @@ from schemas import UserSchema, UserRegisterSchema
 
 blp = Blueprint("Users", "users", description="Operations on users")
 
-def send_simple_message(to, subject, body):
-    domain = os.getenv("MAILGUN_DOMAIN_NAME")
-    return requests.post(
-  		f"https://api.mailgun.net/v3/{domain}/messages",
-  		auth=("api", os.getenv('MAILGUN_API_KEY')),
-  		data={"from": f"Mailgun Sandbox <postmaster@{domain}>",
-			"to": [to],
-  			"subject": subject,
-  			"text": body})
+
+def send_verify_email(to, username, subject, body):
+    api = os.getenv('MAILEROO_API_KEY')
+    client = MailerooClient(api)
+    return client.send_basic_email({
+    "from": EmailAddress("alrza0000a@gmail.com", "STORE API"),
+    "to": [EmailAddress(to, username)],
+    "subject": subject,
+    # "html": "<h1>Hello World!</h1><p>This is a test email.</p>",
+    "plain": body
+})
 
 
 @blp.route("/register")
@@ -48,11 +51,11 @@ class UserRegister(MethodView):
         db.session.add(user)
         db.session.commit()
 
-        send_simple_message(
+        send_verify_email(
             to=user.email,
+            username=user.username,
             subject="Succesfully signed up",
-            body=f"Hi {user.username}! You have successfully signed up to the Stores REST API."
-        )
+            body=f"Hi {user.username}! You have successfully signed up to the Stores REST API.")
 
         return {"message": "User created successfully"}, 201
     
