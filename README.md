@@ -169,3 +169,5 @@ This project demonstrates:
 
 Background task queue and worker are implemented but disabled on Render free tier. 
 To enable them, configure a Redis instance and run the worker service.
+
+---
