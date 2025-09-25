@@ -1,40 +1,20 @@
+from flask import current_app
 from flask import abort
 from flask.views import MethodView
 from flask_smorest import Blueprint
 from passlib.hash import pbkdf2_sha256
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, get_jwt, jwt_required
-import requests
-import os
 from sqlalchemy import or_ 
-from maileroo import MailerooClient, EmailAddress
 
 from blocklist import BLOCKLIST
 from db import db
 from models import UserModel
 from schemas import UserSchema, UserRegisterSchema
+from tasks import send_user_registration_email
 
 
 blp = Blueprint("Users", "users", description="Operations on users")
 
-
-def send_verify_email(to, username, subject, body):
-    api = os.getenv('MAILEROO_API_KEY')
-    if not api:
-        raise ValueError("MAILEROO_API_KEY is not set in environment variables")
-    
-    client = MailerooClient(api)
-
-    try:
-        response = client.send_basic_email({
-            "from": EmailAddress("noreply@25d346ff4380bf05.maileroo.org", "STORES API"),
-            "to": [EmailAddress(to, username)],
-            "subject": subject,
-            "plain": body
-        })
-        return response
-    except Exception as e:
-        print("Error sending email:", e)
-        return None
 
 
 @blp.route("/register")
@@ -58,11 +38,7 @@ class UserRegister(MethodView):
         db.session.add(user)
         db.session.commit()
 
-        send_verify_email(
-            to=user.email,
-            username=user.username,
-            subject="Succesfully signed up",
-            body=f"Hi {user.username}! You have successfully signed up to the Stores REST API.")
+        current_app.queue.enqueue(send_user_registration_email, user.email, user.username)
 
         return {"message": "User created successfully"}, 201
     
