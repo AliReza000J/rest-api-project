@@ -38,8 +38,13 @@ class UserRegister(MethodView):
         db.session.add(user)
         db.session.commit()
 
-        current_app.queue.enqueue(send_user_registration_email, user.email, user.username)
+        # current_app.queue.enqueue(send_user_registration_email, user.email, user.username)
 
+        send_user_registration_email(
+            email=user.email,
+            username=user.username
+        )
+        
         return {"message": "User created successfully"}, 201
     
 
