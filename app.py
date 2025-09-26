@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 import redis
 # import secrets
@@ -48,6 +49,9 @@ def create_app(db_url=None):
     api = Api(app)
 
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY") 
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+    app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
+    
     jwt = JWTManager(app)
 
     @jwt.token_in_blocklist_loader

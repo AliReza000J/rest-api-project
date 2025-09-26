@@ -1,3 +1,4 @@
+from flask import jsonify
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError
@@ -64,7 +65,7 @@ class LinkTagsToItem(MethodView):
         except SQLAlchemyError:
                 abort(500, message="An error occured while deleting the tag.")
 
-        return {"message": "Item removed from tag", "item": item, "tag": tag}
+        return jsonify({"message": "Item removed from tag", "item": item, "tag": tag})
 
 @blp.route("/tag/<int:tag_id>")
 class Tag(MethodView):
@@ -89,9 +90,8 @@ class Tag(MethodView):
         if not tag.items:
             db.session.add(tag)
             db.session.commit()
-            return {"message": "Tag deleted!"}
+            return jsonify({"message": "Tag deleted!"})
         
-        abort(
-             400,
-              message= "Could not delete tag. Make sure tag is not associated with any items, then try again."
-              )
+        return jsonify({
+             "message": "Could not delete tag. Make sure tag is not associated with any items, then try again."
+              }), 400

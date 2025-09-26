@@ -1,5 +1,5 @@
-from flask import current_app
-from flask import abort
+# from flask import current_app
+from flask import jsonify
 from flask.views import MethodView
 from flask_smorest import Blueprint
 from passlib.hash import pbkdf2_sha256
@@ -27,7 +27,7 @@ class UserRegister(MethodView):
                 UserModel.email == user_data["email"]
             )
         ).first():
-            return {"message":"A user with that username or email already exists!!"}, 409
+            return jsonify({"message":"A user with that username or email already exists!!"}), 409
             
             
         user = UserModel(
@@ -45,7 +45,7 @@ class UserRegister(MethodView):
             username=user.username
         )
         
-        return {"message": "User created successfully"}, 201
+        return jsonify({"message": "User created successfully"}), 201
     
 
 
@@ -62,8 +62,7 @@ class UserLogin(MethodView):
             refresh_token = create_refresh_token(identity="user.id")
             return {"access_token": access_token, "refresh_token": refresh_token}
 
-        abort(401, message="Invalid credentials!!")
-
+        return jsonify({"message":"Invalid credentials!!"}), 401
 
 
 @blp.route("/refresh")
@@ -74,7 +73,7 @@ class TokenRefresh(MethodView):
         new_token = create_access_token(identity=current_user, fresh=False)
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
-        return {"acces_token": new_token}
+        return jsonify({"acces_token": new_token})
 
 
 @blp.route("/logout")
@@ -83,7 +82,7 @@ class UserLogout(MethodView):
     def post(self):
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
-        return {"message": "Successfully logged out."}
+        return jsonify({"message": "Successfully logged out."})
 
 @blp.route("/user/<int:user_id>")
 class User(MethodView):
@@ -95,9 +94,9 @@ class User(MethodView):
     def delete(self, user_id):
         jwt = get_jwt()
         if not jwt.get("is_admin"):
-            abort (401, message="Admin privilege required!!!")
+            return jsonify({"message":"Admin privilege required!!!"}), 401
             
         user = UserModel.query.get_or_404(user_id)
         db.session.delete(user)
         db.session.commit()
-        return {"message": "User deleted successfully"}, 200
+        return jsonify({"message": "User deleted successfully"}), 200
