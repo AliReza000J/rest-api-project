@@ -1,4 +1,3 @@
-# security/jwt_setup.py
 import os
 from datetime import datetime, timedelta
 from flask import jsonify
@@ -36,7 +35,11 @@ def token_not_fresh_callback(jwt_header, jwt_payload):
 
 @jwt.additional_claims_loader
 def add_claims_to_jwt(identity):
-    user = UserModel.query.get(identity)
+    try:
+        uid = int(identity)
+    except (TypeError, ValueError):
+        uid = None
+    user = UserModel.query.get(uid) if uid is not None else None
     return {"is_admin": bool(user and user.is_admin)}
 
 @jwt.expired_token_loader
@@ -50,7 +53,8 @@ def expired_token_callback(jwt_header, jwt_payload):
 def invalid_token_callback(error_string: str):
     return jsonify({
         "message": "Signature verification failed.",
-        "error": "invalid_token"
+        "error": "invalid_token",
+        "detail": error_string
     }), 401
 
 @jwt.unauthorized_loader

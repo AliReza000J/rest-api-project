@@ -5,7 +5,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from passlib.hash import pbkdf2_sha256
 from flask_jwt_extended import (
-    create_access_token, create_refresh_token, get_jwt_identity, get_jwt, jwt_required)
+    create_access_token, create_refresh_token, get_jwt, jwt_required)
 from sqlalchemy import or_ 
 from datetime import datetime, timedelta
 
@@ -63,8 +63,8 @@ class UserLogin(MethodView):
         ).first()
 
         if user and pbkdf2_sha256.verify(user_data["password"], user.password):
-            access_token = create_access_token(identity=user.id, fresh=True)
-            refresh_token = create_refresh_token(identity=user.id)
+            access_token = create_access_token(identity=str(user.id), fresh=True)
+            refresh_token = create_refresh_token(identity=str(user.id))
             return {"access_token": access_token, "refresh_token": refresh_token}, 200
 
         return jsonify({"message":"Invalid credentials!!"}), 401
@@ -75,7 +75,8 @@ class TokenRefresh(MethodView):
     @jwt_required(refresh=True)
     def post(self):
         jwt_data = get_jwt()
-        user_id = jwt_data["sub"]
+        user_id_str = jwt_data["sub"]
+        user_id = int(user_id_str)
 
         db.session.add(TokenBlocklistModel(
             jti=jwt_data["jti"],
@@ -84,8 +85,8 @@ class TokenRefresh(MethodView):
             expires_at=datetime.fromtimestamp(jwt_data["exp"]),
         ))
 
-        new_access = create_access_token(identity=user_id, fresh=False)
-        new_refresh = create_refresh_token(identity=user_id)
+        new_access = create_access_token(identity=user_id_str, fresh=False)
+        new_refresh = create_refresh_token(identity=user_id_str)
 
         db.session.commit()
         return {"access_token": new_access, "refresh_token": new_refresh}, 200
@@ -95,10 +96,12 @@ class UserLogout(MethodView):
     @jwt_required()
     def post(self):
         jwt_data = get_jwt()
+        sub = jwt_data.get("sub")
+        user_id = int(sub) if sub is not None else None
         db.session.add(TokenBlocklistModel(
             jti=jwt_data["jti"],
             token_type=jwt_data.get("type", "access"),
-            user_id=jwt_data.get("sub"),
+            user_id=user_id,
             expires_at=datetime.fromtimestamp(jwt_data["exp"]),
         ))
         db.session.commit()
