@@ -47,3 +47,15 @@ def send_user_registration_email(email,username):
         f"Hi {username}! You have successfully signed up to the Stores REST API.",
         render_template("email/action.html", username=username)
     )
+
+
+
+def send_password_reset_email(email, username, reset_url):
+    subject = "Reset your password"
+    text_body = f"Hi {username},\nUse the link below to reset your password:\n{reset_url}\nIf you didn’t request this, you can ignore this email."
+    html_body = render_template(
+        "email/password_reset.html",
+        username=username,
+        reset_url=reset_url,
+    )
+    return send_simple_email(email, username, subject, text_body, html_body)

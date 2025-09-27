@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
 
 
 class PlainItemSchema(Schema):
@@ -58,3 +58,11 @@ class UserSchema(Schema):
 
 class UserRegisterSchema(UserSchema):
     email = fields.Str(required=True)
+
+
+class ForgotPasswordRequestSchema(Schema):
+    email = fields.Email(required=True)
+
+class ResetPasswordConfirmSchema(Schema):
+    token = fields.Str(required=True)
+    password = fields.Str(required=True, load_only=True, validate=validate.Length(min=8))
