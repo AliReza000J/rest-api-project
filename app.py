@@ -12,7 +12,6 @@ from rq import Queue
 from flask_cors import CORS
 
 from db import db
-from blocklist import BLOCKLIST
 import models
 
 from resources.item import blp as ItemBlueprint
