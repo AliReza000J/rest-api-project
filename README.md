@@ -49,19 +49,18 @@ It also includes **user registration with email verification** using Maileroo.
 .
 ├── app.py                     # Application factory (create_app)
 ├── db.py                      # Database initialization
-├── blocklist.py               # Token revocation (logout) management
+├── migrations/                # Alembic migrations folder
 ├── models/                    # SQLAlchemy models (Store, Item, Tag, User, Token blocklist, Password reset)
-├── security/                  # JWT and admin permissions
+├── Procfile                   # For deployment (specifies processes)
 ├── resources/                 # Flask-Smorest resource endpoints
 ├── schemas.py                 # Marshmallow schemas for validation / serialization
+├── security/                  # JWT and admin permissions
 ├── settings.py                # Configuration / settings (e.g. env-based config)
 ├── tasks.py                   # Background tasks / queue worker definitions
 ├── templates/                 # Email templates (for verification and password reset)
 │   └── email/
-├── migrations/                # Alembic migrations folder
 ├── requirements.txt           # Python dependencies
 ├── .env.example               # Example environment variables
-├── Procfile                   # For deployment (specifies processes)
 └── .flaskenv                  # Flask environment variables (development)
 
 ````
