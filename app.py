@@ -54,7 +54,6 @@ def create_app(db_url=None):
     init_jwt(app)
 
     with app.app_context():
-        db.drop_all()
         db.create_all()
 
     api.register_blueprint(ItemBlueprint)
