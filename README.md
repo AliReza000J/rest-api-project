@@ -111,8 +111,8 @@ Create a `.env` file (see `.env.example`) with:
 ```
 DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 JWT_SECRET_KEY=your_secret_key
-And so on.
 ```
+And so on.
 
 ### 5. Run database migrations
 
