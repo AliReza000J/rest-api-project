@@ -1,14 +1,13 @@
 from datetime import timedelta
 import os
-import redis
+# import redis
 # import secrets
 
-from flask import Flask, jsonify
+from flask import Flask
 from flask_smorest import Api
-from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from dotenv import load_dotenv
-from rq import Queue
+# from rq import Queue
 from flask_cors import CORS
 
 from db import db

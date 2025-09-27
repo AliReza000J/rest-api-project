@@ -63,8 +63,8 @@ class UserLogin(MethodView):
         ).first()
 
         if user and pbkdf2_sha256.verify(user_data["password"], user.password):
-            access_token = create_access_token(identity="user.id", fresh=True)
-            refresh_token = create_refresh_token(identity="user.id")
+            access_token = create_access_token(identity=user.id, fresh=True)
+            refresh_token = create_refresh_token(identity=user.id)
             return {"access_token": access_token, "refresh_token": refresh_token}, 200
 
         return jsonify({"message":"Invalid credentials!!"}), 401
@@ -112,7 +112,7 @@ class User(MethodView):
     @blp.response(200, UserSchema)
     def get(self, user_id):
         return UserModel.query.get_or_404(user_id)
-
+    
     @admin_required
     def delete(self, user_id):
         user = UserModel.query.get_or_404(user_id)

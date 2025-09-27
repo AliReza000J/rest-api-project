@@ -50,7 +50,7 @@ def expired_token_callback(jwt_header, jwt_payload):
 def invalid_token_callback(error_string: str):
     return jsonify({
         "message": "Signature verification failed.",
-        "error": "invalid_expired"
+        "error": "invalid_token"
     }), 401
 
 @jwt.unauthorized_loader
