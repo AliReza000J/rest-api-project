@@ -50,12 +50,13 @@ It also includes **user registration with email verification** using Maileroo.
 ├── app.py                     # Application factory (create_app)
 ├── db.py                      # Database initialization
 ├── blocklist.py               # Token revocation (logout) management
-├── models/                    # SQLAlchemy models (Store, Item, Tag, User)
+├── models/                    # SQLAlchemy models (Store, Item, Tag, User, Token blocklist, Password reset)
+├── security/                  # JWT and admin permissions
 ├── resources/                 # Flask-Smorest resource endpoints
 ├── schemas.py                 # Marshmallow schemas for validation / serialization
 ├── settings.py                # Configuration / settings (e.g. env-based config)
 ├── tasks.py                   # Background tasks / queue worker definitions
-├── templates/                 # Email templates (for verification)
+├── templates/                 # Email templates (for verification and password reset)
 │   └── email/
 ├── migrations/                # Alembic migrations folder
 ├── requirements.txt           # Python dependencies
