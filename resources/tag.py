@@ -95,7 +95,7 @@ class Tag(MethodView):
         tag = ItemModel.query.get_or_404(tag_id)
 
         if not tag.items:
-            db.session.add(tag)
+            db.session.delete(tag)
             db.session.commit()
             return jsonify({"message": "Tag deleted!"})
         
