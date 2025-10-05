@@ -92,7 +92,7 @@ class Tag(MethodView):
          400, description="Tag is assigned to an item, so we can not delete it."
     )
     def delete(self, tag_id):
-        tag = ItemModel.query.get_or_404(tag_id)
+        tag = TagModel.query.get_or_404(tag_id)
 
         if not tag.items:
             db.session.delete(tag)
