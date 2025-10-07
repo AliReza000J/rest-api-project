@@ -40,7 +40,7 @@ class item(MethodView):
             item.name = item_data["name"]
             item.description = item_data["description"]
         else:
-            item = ItemModel(id=item_id, **item_data)
+            abort(400, message="item does not exists!")
 
         db.session.add(item)
         db.session.commit()

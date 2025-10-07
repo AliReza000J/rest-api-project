@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from db import db
 from models import TagModel, StoreModel, ItemModel
-from schemas import TagSchema, TagAndItemSchema
+from schemas import TagSchema, TagAndItemSchema, TagUpdateSchema
 
 blp = Blueprint("Tags", "tags", description="Operations os tags")
 
@@ -102,3 +102,18 @@ class Tag(MethodView):
         return jsonify({
              "message": "Could not delete tag. Make sure tag is not associated with any items, then try again."
               }), 400
+
+    @jwt_required()
+    @blp.arguments(TagUpdateSchema)
+    @blp.response(200, TagSchema)
+    def put(self, tag_name, tag_id):
+        tag = TagModel.query.get(tag_id)
+        
+        if tag:
+            tag.name = tag_name["name"]
+        else:
+            abort(400, message="Tag does not exists!")
+
+        db.session.add(tag)
+        db.session.commit()
+        return tag
